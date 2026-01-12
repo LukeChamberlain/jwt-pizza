@@ -8,9 +8,9 @@ As part of `Deliverable ⓵ Development deployment: JWT Pizza`, start up the app
 | --------------------------------------------------- | ------------------ | ----------------- |------------ |
 | View home page                                      |  home.jsx          | none              | none        |
 | Register new user<br/>(t@jwt.com, pw: test)         |  register.jsx      | [POST] /api/auth  | `INSERT INTO user (name, email, password) VALUES (?, ?, ?)` <br/>`INSERT INTO userRole (userId, role, objectId) VALUES (?, ?, ?)` |
-| Login new user<br/>(t@jwt.com, pw: test)            |                    |                   |              |
-| Order pizza                                         |                    |                   |              |
-| Verify pizza                                        |                    |                   |              |
+| Login new user<br/>(t@jwt.com, pw: test)            |  login.tsx         | [PUT] /api/auth   | `SELECT id, name, email, password FROM user WHERE email = ?` <br/> `SELECT role, objectId FROM userRole WHERE userId = ?`            |
+| Order pizza                                         |  menu.tsx, payment.tsx, delivery.tsx|  GET /api/order/menu, GET /api/franchise, POST /api/order|`SELECT id, title, description, price, image FROM menu `<br/>` SELECT * FROM franchise<br/>SELECT * FROM store WHERE franchiseId = ?` <br/> `INSERT INTO orders (userId, storeId, franchiseId, createdAt)` <br/>`INSERT INTO orderItem (orderId, menuId, description, price)`             |
+| Verify pizza                                        |  delivery.tsx | [POST] /api/order/verify | none |
 | View profile page                                   |                    |                   |              |
 | View franchise<br/>(as diner)                       |                    |                   |              |
 | Logout                                              |                    |                   |              |

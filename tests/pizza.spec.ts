@@ -1,4 +1,5 @@
-import { test, expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
+import { test, expect } from "playwright-test-coverage";
 
 type Role = {
   role: string;

@@ -1,6 +1,6 @@
 # 🍕 JWT Pizza
 
-![CI Pipeline](https://github.com/lukechamberlain/jwt-pizza/actions/workflows/ci.yml/badge.svg)
+![CI Pipeline](https://github.com/lukechamberlain/jwt-pizza/actions/workflows/ci.yml/badge.svg?t=1)
 
 ![Coverage badge](https://pizza-factory.cs329.click/api/badge/lukec03/jwtpizzacoverage?t=1)
 

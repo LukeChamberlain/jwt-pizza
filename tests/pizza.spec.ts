@@ -1,17 +1,20 @@
 import { Page } from "@playwright/test";
 import { test, expect } from "playwright-test-coverage";
 
-type Role = {
-  role: string;
-};
+export enum Role {
+  Diner = "diner",
+  Admin = "admin",
+  Franchisee = "franchisee",
+}
 
-type User = {
+export interface User {
   id: string;
   name: string;
   email: string;
-  password: string;
-  roles: Role[];
-};
+  password?: string;
+  roles: { role: Role }[];
+}
+
 async function basicInit(page: Page) {
   let loggedInUser: User | undefined;
   const validUsers: Record<string, User> = {
@@ -20,7 +23,21 @@ async function basicInit(page: Page) {
       name: "Kai Chen",
       email: "d@jwt.com",
       password: "a",
-      roles: [{ role: "Diner" }],
+      roles: [{ role: Role.Diner }],
+    },
+    "f@jwt.com": {
+      id: "4",
+      name: "Fran Chisee",
+      email: "f@jwt.com",
+      password: "franchisee",
+      roles: [{ role: Role.Franchisee }],
+    },
+    "a@jwt.com": {
+      id: "1",
+      name: "Admin User",
+      email: "a@jwt.com",
+      password: "admin",
+      roles: [{ role: Role.Admin }],
     },
   };
 
@@ -71,24 +88,36 @@ async function basicInit(page: Page) {
 
   // Standard franchises and stores
   await page.route(/\/api\/franchise(\?.*)?$/, async (route) => {
-    const franchiseRes = {
-      franchises: [
-        {
-          id: 2,
-          name: "LotaPizza",
-          stores: [
-            { id: 4, name: "Lehi" },
-            { id: 5, name: "Springville" },
-            { id: 6, name: "American Fork" },
-          ],
-        },
-        { id: 3, name: "PizzaCorp", stores: [{ id: 7, name: "Spanish Fork" }] },
-        { id: 4, name: "topSpot", stores: [] },
-      ],
-    };
-    expect(route.request().method()).toBe("GET");
-    await route.fulfill({ json: franchiseRes });
+    const method = route.request().method();
+  
+    if (method === "GET") {
+      const franchiseRes = {
+        franchises: [
+          {
+            id: 2,
+            name: "LotaPizza",
+            stores: [
+              { id: 4, name: "Lehi" },
+              { id: 5, name: "Springville" },
+              { id: 6, name: "American Fork" },
+            ],
+          },
+          { id: 3, name: "PizzaCorp", stores: [{ id: 7, name: "Spanish Fork" }] },
+          { id: 4, name: "topSpot", stores: [] },
+        ],
+      };
+      await route.fulfill({ json: franchiseRes });
+    } else if (method === "POST") {
+      const postData = route.request().postDataJSON();
+      // return the created franchise/store
+      const created = { id: 99, ...postData };
+      await route.fulfill({ json: created });
+    } else {
+      // Fallback for other methods
+      await route.fulfill({ status: 405, json: { error: "Method not allowed" } });
+    }
   });
+  
 
   // Order a pizza.
   await page.route("*/**/api/order", async (route) => {
@@ -124,7 +153,13 @@ test("purchase with login", async ({ page }) => {
   await expect(page.locator("h2")).toContainText("Awesome is a click away");
   await page.getByRole("combobox").selectOption("4");
   await page.getByRole("link", { name: "Image Description Veggie A" }).click();
-  await page.getByRole("link", { name: "Image Description Pepperoni" }).click();
+
+  const pepperoni = page.getByRole("link", {
+    name: "Image Description Pepperoni",
+  });
+
+  await expect(pepperoni).toBeVisible();
+  await pepperoni.click();
   await expect(page.locator("form")).toContainText("Selected pizzas: 2");
   await page.getByRole("button", { name: "Checkout" }).click();
 
@@ -146,4 +181,45 @@ test("purchase with login", async ({ page }) => {
 
   // Check balance
   await expect(page.getByText("0.008")).toBeVisible();
+});
+
+test("franchisee store management", async ({ page }) => {
+  await basicInit(page);
+
+  await page.getByRole("link", { name: "Login" }).click();
+  await page.getByRole("textbox", { name: "Email address" }).fill("f@jwt.com");
+  await page.getByRole("textbox", { name: "Password" }).fill("franchisee");
+  await page.getByRole("button", { name: "Login" }).click();
+
+  await page
+    .getByLabel("Global")
+    .getByRole("link", { name: "Franchise" })
+    .click();
+  await page.getByRole("button", { name: "Create store" }).click();
+  await page.getByRole("textbox", { name: "store name" }).fill("Orem");
+  await page.getByRole("button", { name: "Create" }).click();
+
+  await expect(page.getByText("Lehi")).toBeVisible();
+
+  await page.getByRole("button", { name: "Close" }).click();
+  await page.getByRole("button", { name: "Close", exact: true }).click();
+});
+
+test("admin franchise management", async ({ page }) => {
+  await basicInit(page);
+
+  await page.getByRole("link", { name: "Login" }).click();
+  await page.getByRole("textbox", { name: "Email address" }).fill("a@jwt.com");
+  await page.getByRole("textbox", { name: "Password" }).fill("admin");
+  await page.getByRole("button", { name: "Login" }).click();
+
+  await page.getByRole("link", { name: "Admin" }).click();
+  await page.getByRole("button", { name: "Add Franchise" }).click();
+  await page
+    .getByRole("textbox", { name: "franchise name" })
+    .fill("New Empire");
+  await page
+    .getByRole("textbox", { name: "franchisee admin email" })
+    .fill("a@jwt.com");
+  await page.getByRole("button", { name: "Create" }).click();
 });

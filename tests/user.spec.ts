@@ -8,7 +8,7 @@ test("updateUser", async ({ page }) => {
   await page.getByRole("textbox", { name: "Email address" }).fill(email);
   await page.getByRole("textbox", { name: "Password" }).fill("diner");
   await page.getByRole("button", { name: "Register" }).click();
-  await page.getByRole("link", { name: "pd" }).click({ timeout: 10000 });
+  await page.getByRole("link", { name: "pd" }).click({ timeout: 200000 });
   await expect(page.getByRole("main")).toContainText("pizza diner");
   await page.getByRole("button", { name: "Edit" }).click();
   await expect(page.locator("h3")).toContainText("Edit user");

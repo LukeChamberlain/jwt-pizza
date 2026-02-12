@@ -63,7 +63,6 @@ export default function App() {
 
   const navItems = [
     { title: 'Home', to: '/', component: <Home />, display: [] },
-    { title: 'Diner', to: '/diner-dashboard', component: <DinerDashboard user={user} />, display: [] },
     { title: 'Order', to: '/menu', component: <Menu />, display: ['nav'] },
     {
       title: 'Franchise',
@@ -86,6 +85,7 @@ export default function App() {
     { title: 'Logout', to: '/:subPath?/logout', component: <Logout setUser={setUser} />, constraints: [loggedIn], display: ['nav'] },
     { title: 'Docs', to: '/docs/:docType?', component: <Docs />, display: [] },
     { title: 'Opps', to: '*', component: <NotFound />, display: [] },
+    { title: 'Diner', to: '/diner-dashboard', component: <DinerDashboard user={user} setUser={setUser} />, display: [] },
   ];
 
   return (

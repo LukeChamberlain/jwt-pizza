@@ -109,6 +109,8 @@ interface PizzaService {
   closeFranchise(franchise: Franchise): Promise<void>;
   createStore(franchise: Franchise, store: Store): Promise<Store>;
   closeStore(franchise: Franchise, store: Store): Promise<null>;
+  getUsers(page: number, limit: number, name: string): Promise<{ users: User[]; more: boolean }>;
+  deleteUser(userId: string): Promise<void>;
   docs(docType: string): Promise<Endpoints>;
   updateUser(user: User): Promise<User>;
 }

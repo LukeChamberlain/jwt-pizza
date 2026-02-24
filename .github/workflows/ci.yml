@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
       - name: Set version
         id: set_version
@@ -33,11 +33,11 @@ jobs:
         run: |
           npm ci
           npm run build
-          cp dist/index.html dist/404.html
 
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Update dist artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: package
           path: dist/
 
       - name: Install Playwright and run tests with coverage
@@ -69,17 +69,28 @@ jobs:
             -H "authorization: bearer ${{ secrets.FACTORY_API_KEY }}"
 
   deploy:
-    name: Deploy
     needs: build
-    runs-on: ubuntu-latest
     permissions:
-      pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+    runs-on: ubuntu-latest
+    env:
+      version: ${{needs.build.outputs.version}}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Create OIDC token to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          audience: sts.amazonaws.com
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ secrets.CI_IAM_ROLE }}
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: dist/
+
+      - name: Push to AWS S3
+        run: |
+          echo Deploying $version
+          aws s3 cp dist s3://${{ secrets.APP_BUCKET }} --recursive
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"

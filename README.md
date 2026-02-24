@@ -75,7 +75,7 @@ Modify `tailwind.config.js`
 ```js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['index.html', './src/**/*.{html,js,jsx}'],
+  content: ["index.html", "./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {},
   },
@@ -113,25 +113,29 @@ npm i preline
 Updated the tailwind config to use preline.
 
 ```js
-const defaultTheme = require('tailwindcss/defaultTheme');
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
-  content: ['index.html', './src/**/*.{html,js,jsx}', './node_modules/preline/preline.js'],
+  content: [
+    "index.html",
+    "./src/**/*.{html,js,jsx}",
+    "./node_modules/preline/preline.js",
+  ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  plugins: [require('preline/plugin')],
+  plugins: [require("preline/plugin")],
 };
 ```
 
 Import preline into app.jsx.
 
 ```js
-import 'preline/preline';
+import "preline/preline";
 ```
 
 Initialize components whenever the page location changes.
@@ -153,3 +157,5 @@ export default function App() {
 [HeroIcons](https://heroicons.com/) - MIT license
 
 asdfa
+
+Adding this to run my github action

@@ -79,7 +79,7 @@ Partner 2: Joel Demars
 | Classification | Security Misconfiguration                   |
 | Severity       | 3                                           |
 | Description    | Logged in as admin with default credentials |
-| Images         |               |
+| Images         |  ![login](login.png)             |
 | Corrections    |  change default password and user           |
 
 #### Peer Attack 2
@@ -91,7 +91,7 @@ Partner 2: Joel Demars
 | Classification | Security Misconfiguration                   |
 | Severity       |  4                                          |
 | Description    |  was able to get database configuration     |
-| Images         |               |
+| Images         |  ![database](databaseexposed.png) |
 | Corrections    |  Delete database hostname from /docs endpoint. |
 
 #### Peer Attack 3
@@ -103,7 +103,7 @@ Partner 2: Joel Demars
 | Classification |  Insecure Design            |
 | Severity       |  3             |
 | Description    |  made an order for negative -1000 bitcoin per pizza|
-| Images         |               |
+| Images         |  ![invalid order](invalidorder.png)             |
 | Corrections    | verify order validity |
 
 #### Peer Attack 4
@@ -115,7 +115,7 @@ Partner 2: Joel Demars
 | Classification |  security misconfiguration             |
 | Severity       |  0            |
 | Description    |   tried to get the stack error trace from an unauthorized request.             |
-| Images         |               |
+| Images         |  ![failed stacktrace](failedstacktrace.png) |
 | Corrections    |   already corrected            |
 
 #### Peer Attack 5
@@ -124,11 +124,11 @@ Partner 2: Joel Demars
 | -------------- | ------------------------------------------- |
 | Date           | April 14, 2026                              |
 | Target         | pizza.joeldemars.com                        |
-| Classification |               |
-| Severity       |               |
-| Description    |               |
-| Images         |               |
-| Corrections    |               |
+| Classification | Injection |
+| Severity       | 0 |
+| Description    |  failed injection |
+| Images         |  ![failed injection](failedinjection.png)             |
+| Corrections    |  need to secure database because it is still vulnearable             |
 
 ### Peer Attacks - Joel Demars on Luke Chamberlain
 

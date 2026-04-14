@@ -183,3 +183,5 @@ Partner 2: Joel Demars
 | Corrections    | Sanitize input                                                   |
 
 ### Summary
+
+I learned a lot during this deliverable, I learned that AI will not help you with identifying vulnerables it definilty won't help you with sql injection. I really liked learning to use burp suite. There is a lot of fun things that I can do with burp suite and then I also learned you could probably use that for testing and making sure certain parts are getting sent at the right time.
